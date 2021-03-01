@@ -1,0 +1,14 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UE4Editor-RenderQueueOtioOption.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"D:\UE4_P\JenkinsAutomatioon\Intermediate\Build\Win64\JenkinsAutomatioonEditor\Development\Core\SharedPCH.Core.ShadowErrors.h.obj"
+"D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Intermediate\Build\Win64\UE4Editor\Development\RenderQueueOtioOption\Module.RenderQueueOtioOption.cpp.obj"
+"D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Intermediate\Build\Win64\UE4Editor\Development\RenderQueueOtioOption\Module.RenderQueueOtioOption.gen.cpp.obj"
+"D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Intermediate\Build\Win64\UE4Editor\Development\RenderQueueOtioOption\Default.rc2.res"
+/OUT:"D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Intermediate\Build\Win64\UE4Editor\Development\RenderQueueOtioOption\UE4Editor-RenderQueueOtioOption.lib"
+/INCLUDE:IMPLEMENT_MODULE_RenderQueueOtioOption

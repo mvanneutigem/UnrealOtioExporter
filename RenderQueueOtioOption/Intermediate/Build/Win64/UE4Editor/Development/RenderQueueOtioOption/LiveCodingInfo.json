@@ -1,0 +1,14 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.RenderQueueOtioOption.cpp.obj": [
+			"OtioMoviePipelineSetting.cpp.obj",
+			"OtioMovieSceneTranslator.cpp.obj",
+			"RenderQueueOtioOption.cpp.obj"
+		],
+		"Module.RenderQueueOtioOption.gen.cpp.obj": [
+			"OtioMoviePipelineSetting.gen.cpp.obj",
+			"RenderQueueOtioOption.init.gen.cpp.obj"
+		]
+	}
+}
