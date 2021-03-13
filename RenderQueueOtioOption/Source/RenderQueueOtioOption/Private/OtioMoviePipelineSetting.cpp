@@ -18,10 +18,15 @@
 // For logs
 #include "MovieRenderPipelineCoreModule.h"
 
+//otio
+#include "opentimelineio/timeline.h"
+
 
 void UMoviePipelineOtioExporter::BeginExportImpl()
 {
 	bHasFinishedExporting = true;
+
+	opentimelineio::v1_0::Timeline *timel = new opentimelineio::v1_0::Timeline("test");
 
 #if WITH_EDITOR
 	UMoviePipelineOutputSetting* OutputSetting = GetPipeline()->GetPipelineMasterConfig()->FindSetting<UMoviePipelineOutputSetting>();

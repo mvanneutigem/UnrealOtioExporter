@@ -31,7 +31,8 @@ public class RenderQueueOtioOption : ModuleRules
                 "MovieSceneTools",
                 "MovieSceneTracks",
                 "LevelSequence",
-                "MovieScene"
+                "MovieScene",
+                "opentimelineio",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -54,20 +55,6 @@ public class RenderQueueOtioOption : ModuleRules
 			{
 				// ... add any modules that your module loads dynamically here ...
 			}
-			);
-        
-         //      Type = ModuleType.External;
-
-		//if (Target.Platform == UnrealTargetPlatform.Win64)
-		//{
-		//	// Add the import library
-		//	PublicAdditionalLibraries.Add("$(PluginDir)/Source/ThirdParty/opentimelineio/x64/Release/opentimelineio.lib");
-
-		//	// Delay-load the DLL, so we can load it from the right place first
-		//	PublicDelayLoadDLLs.Add("opentimelineio.dll");
-
-		//	// Ensure that the DLL is staged along with the executable
-		//	RuntimeDependencies.Add("$(PluginDir)/Source/ThirdParty/opentimelineio/x64/Release/opentimelineio.dll");
-        //      }
-	}
+		);
+    }
 }

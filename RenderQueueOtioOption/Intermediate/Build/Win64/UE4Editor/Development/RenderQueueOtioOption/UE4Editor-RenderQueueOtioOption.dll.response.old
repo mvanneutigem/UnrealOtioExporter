@@ -47,6 +47,7 @@
 "C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Development\MovieSceneTools\UE4Editor-MovieSceneTools.lib"
 "C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Development\MovieSceneTracks\UE4Editor-MovieSceneTracks.lib"
 "C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Development\LevelSequence\UE4Editor-LevelSequence.lib"
+"C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Development\MovieScene\UE4Editor-MovieScene.lib"
 "delayimp.lib"
 "wininet.lib"
 "rpcrt4.lib"

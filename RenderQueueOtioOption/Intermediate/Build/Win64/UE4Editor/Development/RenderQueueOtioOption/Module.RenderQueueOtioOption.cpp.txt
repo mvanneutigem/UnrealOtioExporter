@@ -196,6 +196,81 @@ c:\program files\epic games\ue_4.26\engine\source\runtime\levelsequence\public\L
 C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\LevelSequence\LevelSequenceLegacyObjectReference.generated.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\LevelSequence\LevelSequence.generated.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Plugins\MovieScene\MovieRenderPipeline\Source\MovieRenderPipelineCore\Public\MovieRenderPipelineCoreModule.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/timeline.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/version.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentime/version.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentime/rationalTime.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentime/errorStatus.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\string
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\istream
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\ostream
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\ios
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xlocnum
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\cmath
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xtgmath.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\streambuf
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xiosbase
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xlocale
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\stdexcept
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xstring
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xmemory0
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\cstdint
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\limits
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\ymath.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\cfloat
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xlocinfo
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xlocinfo.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\ucrt\locale.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\memory
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xmemory
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xfacet
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\system_error
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\cerrno
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xcall_once.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xerrc.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\ucrt\share.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xstring_insert.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentime/timeRange.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\algorithm
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentime/timeTransform.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/serializableObjectWithMetadata.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/serializableObject.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/errorStatus.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/anyVector.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/any.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio\deps\any/any.hpp
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\vector
+C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\ucrt\assert.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/anyDictionary.h
+C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\ucrt\assert.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\map
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\tuple
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\xtree
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/optional.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio\deps\nonstd/optional.hpp
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\cassert
+C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\ucrt\assert.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\functional
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/typeRegistry.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/stringUtils.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentime/stringPrintf.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\mutex
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\chrono
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\ratio
+C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0\ucrt\time.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\thr/xtimec.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\thr/xthrcommon.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\thread
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\thr/xthread
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\thr/xtime
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\thr/xthreads.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\list
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/track.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/composition.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/item.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/composable.h
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\set
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/stack.h
 D:/UE4_P/JenkinsAutomatioon/Plugins/RenderQueueOtioOption/Source/RenderQueueOtioOption/Private/OtioMovieSceneTranslator.cpp
 C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\AssetRegistry\Public\AssetRegistryModule.h
 c:\program files\epic games\ue_4.26\engine\source\runtime\assetregistry\public\AssetRegistry/AssetRegistryModule.h

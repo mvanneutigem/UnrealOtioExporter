@@ -256,6 +256,9 @@
 /I ..\Intermediate\Build\Win64\UE4Editor\Inc\CurveEditor
 /I Editor\CurveEditor\Public
 /I Editor\EditorWidgets\Public
+/I D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty
+/I D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include
+/I D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio\deps
 /I ThirdParty\PhysX3\PxShared\include
 /I ThirdParty\PhysX3\PxShared\include\cudamanager
 /I ThirdParty\PhysX3\PxShared\include\filebuf
