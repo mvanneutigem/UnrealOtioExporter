@@ -101,7 +101,34 @@ C:\Program Files\Epic Games\UE_4.26\Engine\Plugins\MovieScene\MovieRenderPipelin
 c:\program files\epic games\ue_4.26\engine\plugins\moviescene\movierenderpipeline\source\movierenderpipelinecore\public\MoviePipelineConfigBase.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Plugins\MovieScene\MovieRenderPipeline\Intermediate\Build\Win64\UE4Editor\Inc\MovieRenderPipelineCore\MoviePipelineConfigBase.generated.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Plugins\MovieScene\MovieRenderPipeline\Intermediate\Build\Win64\UE4Editor\Inc\MovieRenderPipelineCore\MoviePipelineMasterConfig.generated.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Editor\MovieSceneTools\Public\MovieSceneTranslator.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Source\Editor\MovieSceneTools\Public\MovieSceneToolHelpers.h
+c:\program files\epic games\ue_4.26\engine\source\editor\moviescenetools\public\MovieSceneObjectBindingIDPicker.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Source\Editor\Sequencer\Public\ISequencer.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\MovieScene\Public\IMovieScenePlayer.h
+c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\Evaluation/MovieSceneAnimTypeID.h
+c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\Evaluation/MovieSceneEvaluationKey.h
+c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\Evaluation/MovieSceneTrackIdentifier.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\Core\Public\UObject/EditorObjectVersion.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\MovieSceneTrackIdentifier.generated.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\MovieSceneEvaluationKey.generated.h
+c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\Evaluation/MovieScenePreAnimatedState.h
+c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\MovieSceneExecutionToken.h
+c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\MovieSceneSpawnRegister.h
+c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\IMovieSceneObjectSpawner.h
+c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\Evaluation/MovieSceneEvaluationState.h
+c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\Evaluation/PersistentEvaluationData.h
+c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\Evaluation/IMovieSceneMotionVectorSimulation.h
+c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\Generators/MovieSceneEasingCurves.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\MovieSceneEasingCurves.generated.h
+c:\program files\epic games\ue_4.26\engine\source\editor\sequencer\public\KeyPropertyParams.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Source\Editor\PropertyEditor\Public\PropertyPath.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\CoreUObject\Public\UObject/WeakFieldPtr.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\Slate\Public\Widgets/Input/NumericTypeInterface.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\Core\Public\Math/BasicMathExpressionEvaluator.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\Core\Public\Internationalization/FastDecimalFormat.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Source\Editor/SequencerWidgets/Public/ITimeSlider.h
+C:\Program Files\Epic Games\UE_4.26\Engine\Source\Editor/Sequencer/Public/ISequencerInputHandler.h
+c:\program files\epic games\ue_4.26\engine\source\editor\moviescenetools\public\MovieSceneTranslator.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\MovieSceneTracks\Public\Tracks/MovieSceneAudioTrack.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\MovieScene\Public\MovieSceneNameableTrack.h
 c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\MovieSceneTrack.h
@@ -132,7 +159,6 @@ C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\In
 c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\channels\MovieSceneChannelTraits.h
 c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\channels\MovieSceneChannelEditorData.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\MovieScene\Public\MovieSceneCommonHelpers.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\CoreUObject\Public\UObject/WeakFieldPtr.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\MovieScene\Public\Evaluation/MovieSceneEvaluationTemplateInstance.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\MovieScene\Public\Evaluation/MovieSceneRootOverridePath.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\MovieScene\Public\Compilation/MovieSceneCompiledDataID.h
@@ -140,11 +166,6 @@ C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\MovieScene\Public\Enti
 C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\MovieScene\Public\EntitySystem/MovieSceneSequenceInstance.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\MovieScene\Public\EntitySystem/MovieSceneEntityLedger.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\MovieScene\Public\Evaluation/MovieSceneEvaluationField.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\MovieScene\Public\Evaluation/MovieSceneEvaluationKey.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\MovieScene\Public\Evaluation/MovieSceneTrackIdentifier.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\Core\Public\UObject/EditorObjectVersion.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\MovieSceneTrackIdentifier.generated.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\MovieSceneEvaluationKey.generated.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\MovieSceneEvaluationField.generated.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\MovieScene\Public\EntitySystem/IMovieSceneEntityProvider.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\IMovieSceneEntityProvider.generated.h
@@ -158,28 +179,6 @@ C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\MovieScene\Public\Trac
 C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\MovieSceneSubTrack.generated.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieSceneTracks\MovieSceneCinematicShotTrack.generated.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h
-D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\RenderQueueOtioOption\Public\OtioMovieSceneTranslator.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Editor\MovieSceneTools\Public\MovieSceneToolHelpers.h
-c:\program files\epic games\ue_4.26\engine\source\editor\moviescenetools\public\MovieSceneObjectBindingIDPicker.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Editor\Sequencer\Public\ISequencer.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\MovieScene\Public\IMovieScenePlayer.h
-c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\Evaluation/MovieSceneAnimTypeID.h
-c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\Evaluation/MovieScenePreAnimatedState.h
-c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\MovieSceneExecutionToken.h
-c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\MovieSceneSpawnRegister.h
-c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\IMovieSceneObjectSpawner.h
-c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\Evaluation/MovieSceneEvaluationState.h
-c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\Evaluation/PersistentEvaluationData.h
-c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\Evaluation/IMovieSceneMotionVectorSimulation.h
-c:\program files\epic games\ue_4.26\engine\source\runtime\moviescene\public\Generators/MovieSceneEasingCurves.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\MovieSceneEasingCurves.generated.h
-c:\program files\epic games\ue_4.26\engine\source\editor\sequencer\public\KeyPropertyParams.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Editor\PropertyEditor\Public\PropertyPath.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\Slate\Public\Widgets/Input/NumericTypeInterface.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\Core\Public\Math/BasicMathExpressionEvaluator.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\Core\Public\Internationalization/FastDecimalFormat.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Editor/SequencerWidgets/Public/ITimeSlider.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Editor/Sequencer/Public/ISequencerInputHandler.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\MovieSceneCapture\Public\MovieSceneCaptureSettings.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieSceneCapture\MovieSceneCaptureSettings.generated.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Source\Editor\EditorWidgets\Public\SEnumCombobox.h
@@ -271,13 +270,9 @@ D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\open
 D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/composable.h
 C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.16.27023\INCLUDE\set
 D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/stack.h
-D:/UE4_P/JenkinsAutomatioon/Plugins/RenderQueueOtioOption/Source/RenderQueueOtioOption/Private/OtioMovieSceneTranslator.cpp
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\AssetRegistry\Public\AssetRegistryModule.h
-c:\program files\epic games\ue_4.26\engine\source\runtime\assetregistry\public\AssetRegistry/AssetRegistryModule.h
-c:\program files\epic games\ue_4.26\engine\source\runtime\assetregistry\public\AssetRegistry/IAssetRegistry.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\CoreUObject\Public\Misc/AssetRegistryInterface.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\CoreUObject\Public\AssetRegistry/ARFilter.h
-C:\Program Files\Epic Games\UE_4.26\Engine\Intermediate\Build\Win64\UE4Editor\Inc\AssetRegistry\IAssetRegistry.generated.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/clip.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/mediaReference.h
+D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\ThirdParty\opentimelineio\include\opentimelineio/externalReference.h
 D:/UE4_P/JenkinsAutomatioon/Plugins/RenderQueueOtioOption/Source/RenderQueueOtioOption/Private/RenderQueueOtioOption.cpp
 D:\UE4_P\JenkinsAutomatioon\Plugins\RenderQueueOtioOption\Source\RenderQueueOtioOption\Public\RenderQueueOtioOption.h
 C:\Program Files\Epic Games\UE_4.26\Engine\Source\Runtime\Core\Public\Core.h

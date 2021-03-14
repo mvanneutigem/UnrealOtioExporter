@@ -21,8 +21,8 @@ void EmptyLinkFunctionForGeneratedCodeRenderQueueOtioOption_init() {}
 				nullptr,
 				0,
 				PKG_CompiledIn | 0x00000000,
-				0xF60123C7,
-				0x6D473612,
+				0x64657634,
+				0x54358BEC,
 				METADATA_PARAMS(nullptr, 0)
 			};
 			UE4CodeGen_Private::ConstructUPackage(ReturnPackage, PackageParams);
