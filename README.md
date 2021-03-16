@@ -1,2 +1,2 @@
 # UnrealOtioExporter
-Otio exporter plugin
+[WIP] Otio exporter option, plugin for the movie render queue.

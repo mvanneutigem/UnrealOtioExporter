@@ -19,11 +19,14 @@
 
 //otio
 #include "opentimelineio/timeline.h"
+#include "opentimelineio/stack.h"
 #include "opentimelineio/track.h"
 #include "opentimelineio/clip.h"
 #include "opentimelineio/externalReference.h"
 
 #include <string>
+
+namespace otio = opentimelineio::OPENTIMELINEIO_VERSION;
 
 
 void UMoviePipelineOtioExporter::BeginExportImpl()
@@ -45,6 +48,10 @@ void UMoviePipelineOtioExporter::BeginExportImpl()
 	GetPipeline()->ResolveFilenameFormatArguments(FileNameFormatString, FormatOverrides, FilePath, TempFormatArgs);
 
 	bool bSuccess = EnsureWritableFile();
+
+	//otio::ErrorStatus* error_status = new otio::ErrorStatus();
+	otio::ErrorStatus error_status;
+	//std::shared_ptr<opentimelineio::v1_0::ErrorStatus> error_status = std::make_shared<opentimelineio::v1_0::ErrorStatus>();
 
 	if (bSuccess)
 	{
@@ -68,28 +75,19 @@ void UMoviePipelineOtioExporter::BeginExportImpl()
 		FFrameRate FrameRate = GetPipeline()->GetPipelineMasterConfig()->GetEffectiveFrameRate(Sequence);
 		uint32 ResX = OutputSetting->OutputResolution.X;
 		uint32 ResY = OutputSetting->OutputResolution.Y;
-		FString MovieExtension = ".avi";
-
-		//FOtioExporter* Exporter = new FOtioExporter;
-
-		//TSharedRef<FMovieSceneTranslatorContext> ExportContext(new FMovieSceneTranslatorContext);
-		//ExportContext->Init();
 
 		const FMovieSceneExportMetadata& OutputMetadata = GetPipeline()->GetOutputMetadata();
 
-		// otio export mess
 		const UMovieSceneTrack* camera_cut_track = MovieScene->GetCameraCutTrack();
 		const TArray <UMovieSceneTrack*> master_tracks = MovieScene->GetMasterTracks();
 
 		// construct otio timeline
 		auto movie_scene_name_fstring = FilePath;
-		auto movie_scene_name = std::string(TCHAR_TO_UTF8(*movie_scene_name_fstring));
+		std::string movie_scene_name = std::string(TCHAR_TO_UTF8(*movie_scene_name_fstring));
 
-		opentimelineio::v1_0::Timeline* otio_timeline = new opentimelineio::v1_0::Timeline(
-			movie_scene_name
-		);
-
-		opentimelineio::v1_0::Track* otio_master_track = new opentimelineio::v1_0::Track();
+		auto otio_timeline = otio::SerializableObject::Retainer<otio::Timeline>(new otio::Timeline(movie_scene_name));
+		auto otio_stack = otio::SerializableObject::Retainer<otio::Stack>(new otio::Stack());
+		auto otio_master_track = otio::SerializableObject::Retainer<otio::Track>(new otio::Track());
 
 		for (int i = 0; i < OutputMetadata.Shots.Num(); i++)
 		{
@@ -106,7 +104,7 @@ void UMoviePipelineOtioExporter::BeginExportImpl()
 				UE_LOG(LogClass, Log, TEXT("Called FOtioExporter::Export clip_outer_name: %s"), *clip_outer_name);
 				for (auto& format : clip.Value)
 				{
-					// add the best format, maybe a fallback type thing like mov > jpeg > ...
+					// add the best format only, maybe a fallback type thing like mov > jpeg > ...
 					FString clip_format = format.Key;
 					FMovieSceneExportMetadataClip clipmetadata = format.Value;
 					int32 Duration = clipmetadata.GetDuration();
@@ -119,39 +117,62 @@ void UMoviePipelineOtioExporter::BeginExportImpl()
 					UE_LOG(LogClass, Log, TEXT("Called FOtioExporter::Export clip_format: %s"), *clip_format);
 					UE_LOG(LogClass, Log, TEXT("Called FOtioExporter::Export clip FileName: %s"), *FileName);
 
+					FString ShotFilePath = OutputSetting->OutputDirectory.Path / FileName;
+					UE_LOG(LogClass, Log, TEXT("Called FOtioExporter::Export ShotFilePath: %s"), *ShotFilePath);
+
 					std::string clip_format_str = std::string(TCHAR_TO_UTF8(*clip_format));
-					std::string FileName_Str = std::string(TCHAR_TO_UTF8(*FileName));
+					std::string FileName_Str = std::string(TCHAR_TO_UTF8(*ShotFilePath));
 					std::string shot_display_name_str = std::string(TCHAR_TO_UTF8(*shot_display_name));
-					opentimelineio::v1_0::Clip* otio_clip = new opentimelineio::v1_0::Clip(
-						shot_display_name_str,
-						new opentimelineio::v1_0::ExternalReference(FileName_Str)
+					std::string shot_File_path_Str = std::string(TCHAR_TO_UTF8(*ShotFilePath));
+
+					// TODO: memory management...
+					auto otio_reference = otio::SerializableObject::Retainer<otio::ExternalReference>(
+						new otio::ExternalReference(FileName_Str)
 					);
 
-					opentimelineio::v1_0::ErrorStatus* error_status = nullptr;
-					otio_master_track->append_child(otio_clip, error_status);
+					auto otio_clip_timerange = otio::TimeRange(otio::RationalTime(InFrame), otio::RationalTime(Duration));
+					auto otio_clip = otio::SerializableObject::Retainer<otio::Clip>(
+						new otio::Clip(shot_File_path_Str, otio_reference, otio_clip_timerange)
+					);
+
+					if (!otio_master_track.value->append_child(otio_clip, &error_status))
+					{
+						FString error_message = UTF8_TO_TCHAR(
+							(otio::ErrorStatus::outcome_to_string(error_status.outcome) + ": " + error_status.details).c_str()
+						);
+						UE_LOG(LogMovieRenderPipeline, Error, TEXT("OTIO Error: %s"), *error_message);
+					}
+
+					// TODO: add all the data to the clip :)
 				}
 			}
-
-			// 
 			
 		}
-		// UE_LOG(LogClass, Log, TEXT("Called FOtioExporter::Export camera_cut_track name: %s"), camera_cut_track->GetTrackName());
 
+		if (!otio_stack.value->append_child(otio_master_track, &error_status))
+		{
+			FString error_message = UTF8_TO_TCHAR(
+				(otio::ErrorStatus::outcome_to_string(error_status.outcome) + ": " + error_status.details).c_str()
+			);
+			UE_LOG(LogMovieRenderPipeline, Error, TEXT("OTIO Error: %s"), *error_message);
+		}
+		otio_timeline.value->set_tracks(otio_stack);
 
-		//timeline->set_tracks(tracks);
-
-		//// write out otio file
-		//timeline->write_to(writer);
+		// write out otio file
+		std::string otio_file_path_str = std::string(TCHAR_TO_UTF8(*FilePath));
+		
+		// bad heap, this falls over on the Clip destructor where it calls managed_release :(
+		if (!otio_timeline.value->to_json_file(otio_file_path_str, &error_status))
+		{
+			FString error_message = UTF8_TO_TCHAR(
+				(otio::ErrorStatus::outcome_to_string(error_status.outcome) + ": " + error_status.details).c_str()
+			);
+			UE_LOG(LogMovieRenderPipeline, Error, TEXT("OTIO Error: %s"), *error_message);
+		}
 
 		// delete the timeline, which in turn is reponsible for deleting its children.
-		//otio_master_track->possibly_delete();
-		//otio_timeline->possibly_delete();
-
-
-		// Log any messages in context
-		//MovieSceneToolHelpers::MovieSceneTranslatorLogMessages(Exporter, ExportContext, false);
-
-		//delete Exporter;
+		// this crashes same as the above :(
+		otio_timeline.value->possibly_delete();
 	}
 
 	if (!bSuccess)
