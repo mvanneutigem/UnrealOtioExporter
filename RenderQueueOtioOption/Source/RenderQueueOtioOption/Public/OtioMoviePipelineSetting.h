@@ -25,6 +25,7 @@ protected:
 	virtual void BeginExportImpl() override;
 
 	bool EnsureWritableFile();
+	/*void OtioToJsonTest();*/
 	bool bOverwriteFile;
 
 public:
