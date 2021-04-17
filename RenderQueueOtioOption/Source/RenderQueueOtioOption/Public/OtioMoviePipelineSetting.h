@@ -25,7 +25,6 @@ protected:
 	virtual void BeginExportImpl() override;
 
 	bool EnsureWritableFile();
-	/*void OtioToJsonTest();*/
 	bool bOverwriteFile;
 
 public:
@@ -33,7 +32,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Opentimelineio settings")
 		FString FileNameFormat;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Opentimelineio settings")
-		FString FileReferenceFormat = "mov";
+		FString FileReferenceFormat = "jpeg";
 
 protected:
 	/** The file to write to */

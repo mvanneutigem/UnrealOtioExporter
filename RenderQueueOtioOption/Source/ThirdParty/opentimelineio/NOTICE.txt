@@ -1,0 +1,7 @@
+OpenTimelineIO   
+Copyright Contributors to the OpenTimelineIO project.
+All rights reserved.
+
+This product includes software developed at:
+       
+Pixar (http://www.pixar.com/).
