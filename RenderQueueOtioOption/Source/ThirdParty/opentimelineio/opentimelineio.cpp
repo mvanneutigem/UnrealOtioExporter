@@ -20,12 +20,7 @@ void FopentimelineioModule::StartupModule()
 
 	ExampleLibraryHandle = !LibraryPath.IsEmpty() ? FPlatformProcess::GetDllHandle(*LibraryPath) : nullptr;
 
-	if (ExampleLibraryHandle)
-	{
-		// Call the test function in the third party library that opens a message box
-		FMessageDialog::Open(EAppMsgType::Ok, LOCTEXT("ThirdPartyLibraryError", "Loaded otio library"));
-	}
-	else
+	if (!ExampleLibraryHandle)
 	{
 		FMessageDialog::Open(EAppMsgType::Ok, LOCTEXT("ThirdPartyLibraryError", "Failed to load otio library"));
 	}
