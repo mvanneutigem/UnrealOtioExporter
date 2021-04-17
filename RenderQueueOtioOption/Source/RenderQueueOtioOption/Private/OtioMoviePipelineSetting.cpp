@@ -30,26 +30,24 @@ namespace otio = opentimelineio::OPENTIMELINEIO_VERSION;
 
 void UMoviePipelineOtioExporter::BeginExportImpl()
 {
-	UE_LOG(LogClass, Log, TEXT("Running OtioMoviePipelineSetting OTIO export"));
+	UE_LOG(LogMovieRenderPipeline, Log, TEXT("Running OtioMoviePipelineSetting OTIO export"));
 	bHasFinishedExporting = true;
 
 	UMoviePipeline* pipeline = GetPipeline();
 	UMoviePipelineExecutorJob* job = pipeline->GetCurrentJob();
-	UMoviePipelineOutputSetting* OutputSetting = pipeline->GetPipelineMasterConfig()->FindSetting<UMoviePipelineOutputSetting>();
+	UMoviePipelineOutputSetting* outputSetting = pipeline->GetPipelineMasterConfig()->FindSetting<UMoviePipelineOutputSetting>();
 
 	// Use our file name format ({sequence}), exposed on the setting gui, on the end of the shared common directory.
-	FString FileNameFormatString = OutputSetting->OutputDirectory.Path / FileNameFormat;
+	FString fileNameFormatString = outputSetting->OutputDirectory.Path / FileNameFormat;
 
-	FStringFormatNamedArguments FormatOverrides;
-	FormatOverrides.Add(TEXT("ext"), TEXT("otio"));
+	FStringFormatNamedArguments formatOverrides;
+	formatOverrides.Add(TEXT("ext"), TEXT("otio"));
 
 	// Create a full output file path
-	FMoviePipelineFormatArgs TempFormatArgs;
-	GetPipeline()->ResolveFilenameFormatArguments(FileNameFormatString, FormatOverrides, FilePath, TempFormatArgs);
+	FMoviePipelineFormatArgs tempFormatArgs;
+	GetPipeline()->ResolveFilenameFormatArguments(fileNameFormatString, formatOverrides, FilePath, tempFormatArgs);
 
 	bool bSuccess = EnsureWritableFile();
-
-	otio::ErrorStatus error_status;
 
 	if (!bSuccess)
 	{
@@ -58,144 +56,130 @@ void UMoviePipelineOtioExporter::BeginExportImpl()
 	}
 
 	// gather neccesary data for export
-	ULevelSequence* Sequence = GetPipeline()->GetTargetSequence();
+	ULevelSequence* sequence = GetPipeline()->GetTargetSequence();
 	
-	UMovieScene* MovieScene = Sequence->GetMovieScene();
-	if (!MovieScene)
+	UMovieScene* movieScene = sequence->GetMovieScene();
+	if (!movieScene)
 	{
 		return;
 	}
 
-	UMovieSceneCinematicShotTrack* ShotTrack = MovieScene->FindMasterTrack<UMovieSceneCinematicShotTrack>();
-	if (!ShotTrack)
+	UMovieSceneCinematicShotTrack* shotTrack = movieScene->FindMasterTrack<UMovieSceneCinematicShotTrack>();
+	if (!shotTrack)
 	{
 		return;
 	}
 
-	FString FilenameFormat = OutputSetting->FileNameFormat;
-	int32 HandleFrames = OutputSetting->HandleFrameCount;
-	FFrameRate FrameRate = GetPipeline()->GetPipelineMasterConfig()->GetEffectiveFrameRate(Sequence);
-	uint32 ResX = OutputSetting->OutputResolution.X;
-	uint32 ResY = OutputSetting->OutputResolution.Y;
-
+	int32 handleFrames = outputSetting->HandleFrameCount;
 	const FMovieSceneExportMetadata& OutputMetadata = GetPipeline()->GetOutputMetadata();
 
-	const UMovieSceneTrack* camera_cut_track = MovieScene->GetCameraCutTrack();
-	const TArray <UMovieSceneTrack*> master_tracks = MovieScene->GetMasterTracks();
-
 	// construct otio timeline
-	auto movie_scene_name_fstring = FilePath;
-	auto master_sequence_name = std::string(TCHAR_TO_UTF8(*Sequence->GetName()));
+	otio::ErrorStatus errorStatus;
+	auto masterSequenceName = std::string(TCHAR_TO_UTF8(*sequence->GetName()));
 
 	// in unreal frames are stored based on the tick interval, and some functions give that value back, 
 	// while others return the FPS frame number. We ned the frame number in relation to the fps rate
-	// so we convert these values in these instances;
-	// Frame * (Display Rate in fps / Tick Interval ).
-	// TODO: double check this conversion is working as expected when I have access to otioview
-	auto tick_resolution = MovieScene->GetTickResolution();
-	auto display_rate = MovieScene->GetDisplayRate();
-	auto playback_range = MovieScene->GetPlaybackRange();
-	auto start_time = playback_range.GetLowerBoundValue() * (display_rate.AsDecimal() / tick_resolution.AsDecimal());
+	// so we convert these values in these instances.
+	auto tickResolution = movieScene->GetTickResolution();
+	auto displayRate = movieScene->GetDisplayRate();
+	auto playbackRange = movieScene->GetPlaybackRange();
+	auto startTime = (playbackRange.GetLowerBoundValue() / tickResolution.Numerator) * displayRate.Numerator;
+	auto trackDuration = (playbackRange.GetUpperBoundValue() - playbackRange.GetLowerBoundValue()) / tickResolution.Numerator * displayRate.Numerator;
 
 	// we store the timeline in a container, if we dont do this we run into issues when trying to write out the file.
-	auto otio_timeline = otio::SerializableObject::Retainer<otio::Timeline>(
-		new otio::Timeline(master_sequence_name, otio::RationalTime(start_time.Value / tick_resolution.Numerator))
+	auto otioTimeline = otio::SerializableObject::Retainer<otio::Timeline>(
+		new otio::Timeline(masterSequenceName, otio::RationalTime(startTime.Value / tickResolution.Numerator, displayRate.AsDecimal()))
 	);
-	auto otio_stack = new otio::Stack();
-	auto otio_master_track =new otio::Track();
-	if (!otio_stack->append_child(otio_master_track, &error_status))
+	auto otioTrackTimerange = otio::TimeRange(
+		otio::RationalTime(startTime.Value, displayRate.AsDecimal()),
+		otio::RationalTime(trackDuration.Value, displayRate.AsDecimal())
+	);
+	auto otioStack = new otio::Stack("master", otioTrackTimerange);
+	auto otioMasterTrack = new otio::Track("master", otioTrackTimerange);
+	if (!otioStack->append_child(otioMasterTrack, &errorStatus))
 	{
 		FString error_message = UTF8_TO_TCHAR(
-			(otio::ErrorStatus::outcome_to_string(error_status.outcome) + ": " + error_status.details).c_str()
+			(otio::ErrorStatus::outcome_to_string(errorStatus.outcome) + ": " + errorStatus.details).c_str()
 		);
 		UE_LOG(LogMovieRenderPipeline, Error, TEXT("OTIO Error: %s"), *error_message);
 	}
-	otio_timeline.value->set_tracks(otio_stack);
+	otioTimeline.value->set_tracks(otioStack);
 
 	for (int i = 0; i < OutputMetadata.Shots.Num(); i++)
 	{
 		FMovieSceneExportMetadataShot shot = OutputMetadata.Shots[i];
 
 		UMovieSceneCinematicShotSection* section = shot.MovieSceneShotSection.Get();
-		auto clip_timerange = section->GetRange();
-		auto otio_clip_timerange = otio::TimeRange(
+		auto clipTimerange = section->GetRange();
+		auto otioClipTimerange = otio::TimeRange(
 			otio::RationalTime(
-				clip_timerange.GetLowerBoundValue().Value * (display_rate.AsDecimal() / tick_resolution.AsDecimal())
+				clipTimerange.GetLowerBoundValue().Value / tickResolution.Numerator * displayRate.Numerator,
+				displayRate.AsDecimal()
 			), 
 			otio::RationalTime(
-				clip_timerange.GetUpperBoundValue().Value * (display_rate.AsDecimal() / tick_resolution.AsDecimal())
+				clipTimerange.GetUpperBoundValue().Value / tickResolution.Numerator * displayRate.Numerator,
+				displayRate.AsDecimal()
 			)
 		);
 
-		UE_LOG(LogClass, Log, TEXT("Called FOtioExporter::Export shot display name: %s"), *section->GetShotDisplayName());
-		FString shot_display_name = section->GetShotDisplayName();
+		UE_LOG(LogMovieRenderPipeline, Log, TEXT("Add shot to otio file: %s"), *section->GetShotDisplayName());
+		FString shotDisplayName = section->GetShotDisplayName();
 
 		for (auto& clip : shot.Clips)
 		{
 			FString clip_outer_name = clip.Key;
-			UE_LOG(LogClass, Log, TEXT("Called FOtioExporter::Export clip_outer_name: %s"), *clip_outer_name);
 			for (auto& format : clip.Value)
 			{
-				// add the best format only, maybe a fallback type thing like mov > jpeg > ...
-				FString clip_format = format.Key;
-				FMovieSceneExportMetadataClip clipmetadata = format.Value;
-				int32 Duration = clipmetadata.GetDuration();
-				int32 StartFrame = clipmetadata.StartFrame;
-				int32 EndFrame = clipmetadata.EndFrame;
-				int32 InFrame = HandleFrames;
-				int32 OutFrame = InFrame + Duration;
-				FString FileName = clipmetadata.FileName;
-
-				UE_LOG(LogClass, Log, TEXT("Called FOtioExporter::Export clip_format: %s"), *clip_format);
-				UE_LOG(LogClass, Log, TEXT("Called FOtioExporter::Export clip FileName: %s"), *FileName);
-
-				FString ShotFilePath = OutputSetting->OutputDirectory.Path / FileName;
-				UE_LOG(LogClass, Log, TEXT("Called FOtioExporter::Export ShotFilePath: %s"), *ShotFilePath);
-
-				std::string clip_format_str = std::string(TCHAR_TO_UTF8(*clip_format));
-				std::string FileName_Str = std::string(TCHAR_TO_UTF8(*ShotFilePath));
-				std::string shot_display_name_str = std::string(TCHAR_TO_UTF8(*shot_display_name));
-				std::string shot_File_path_Str = std::string(TCHAR_TO_UTF8(*ShotFilePath));
-
-				auto otio_reference = new otio::ExternalReference(FileName_Str);
-				auto otio_media_timerange = otio::TimeRange(otio::RationalTime(InFrame), otio::RationalTime(Duration));
-				otio_reference->set_available_range(otio_media_timerange);
-				
-				auto otio_clip = new otio::Clip(shot_File_path_Str, otio_reference, otio_clip_timerange);
-
-				if (!otio_master_track->append_child(otio_clip, &error_status))
+				if (FileReferenceFormat.Compare(format.Key, ESearchCase::IgnoreCase))
 				{
-					FString error_message = UTF8_TO_TCHAR(
-						(otio::ErrorStatus::outcome_to_string(error_status.outcome) + ": " + error_status.details).c_str()
-					);
-					UE_LOG(LogMovieRenderPipeline, Error, TEXT("OTIO Error: %s"), *error_message);
+					continue;
 				}
+				FString clipFormat = format.Key;
+				FMovieSceneExportMetadataClip clipMetadata = format.Value;
+				int32 duration = clipMetadata.GetDuration();
+				int32 inFrame = handleFrames;
+				FString fileName = clipMetadata.FileName;
+				FString shotFilePath = outputSetting->OutputDirectory.Path / fileName;
 
-				// TODO: Check frameranges are correct with otioview.
+				std::string fileNameStr = std::string(TCHAR_TO_UTF8(*shotFilePath));
+				std::string shotDisplayNameStr = std::string(TCHAR_TO_UTF8(*shotDisplayName));
+
+				auto otioReference = new otio::ExternalReference(fileNameStr);
+				auto otioMediaTimerange = otio::TimeRange(
+					otio::RationalTime(inFrame, displayRate.AsDecimal()), 
+					otio::RationalTime(duration, displayRate.AsDecimal())
+				);
+				otioReference->set_available_range(otioMediaTimerange);
+				
+				auto otioClip = new otio::Clip(shotDisplayNameStr, otioReference, otioClipTimerange);
+
+				if (!otioMasterTrack->append_child(otioClip, &errorStatus))
+				{
+					FString errorMessage = UTF8_TO_TCHAR(
+						(otio::ErrorStatus::outcome_to_string(errorStatus.outcome) + ": " + errorStatus.details).c_str()
+					);
+					UE_LOG(LogMovieRenderPipeline, Error, TEXT("OTIO Error: %s"), *errorMessage);
+				}
 			}
 		}
 			
 	}
 
 	// write out otio file
-	std::string otio_file_path_str = std::string(TCHAR_TO_UTF8(*FilePath));
+	std::string otioFilePathStr = std::string(TCHAR_TO_UTF8(*FilePath));
 		
-	UE_LOG(LogMovieRenderPipeline, Log, TEXT("Start writing"));
-	if (!otio_timeline.value->to_json_file(otio_file_path_str, &error_status))
+	if (!otioTimeline.value->to_json_file(otioFilePathStr, &errorStatus))
 	{
-		FString error_message = UTF8_TO_TCHAR(
-			(otio::ErrorStatus::outcome_to_string(error_status.outcome) + ": " + error_status.details).c_str()
+		FString errorMessage = UTF8_TO_TCHAR(
+			(otio::ErrorStatus::outcome_to_string(errorStatus.outcome) + ": " + errorStatus.details).c_str()
 		);
-		UE_LOG(LogMovieRenderPipeline, Error, TEXT("OTIO Error: %s"), *error_message);
+		UE_LOG(LogMovieRenderPipeline, Error, TEXT("OTIO Error: %s"), *errorMessage);
 	}
-	UE_LOG(LogMovieRenderPipeline, Log, TEXT("Finished writing"));
 
 	// we take back ownership of the timeline so unreal's garbage collection can clean it up safely, 
 	// if we dont do this or try to delete it ourselves with the "possibly_delete" function
 	// we will end up with a heap corruption.
-	otio::Timeline* timeline = otio_timeline.take_value();
-
-	UE_LOG(LogMovieRenderPipeline, Log, TEXT("Finished cleanup"));
+	otio::Timeline* timeline = otioTimeline.take_value();
 
 	if (!bSuccess)
 	{
@@ -206,14 +190,14 @@ void UMoviePipelineOtioExporter::BeginExportImpl()
 
 bool UMoviePipelineOtioExporter::EnsureWritableFile()
 {
-	FString Directory = FPaths::GetPath(FilePath);
+	FString directory = FPaths::GetPath(FilePath);
 
-	if (!IFileManager::Get().DirectoryExists(*Directory))
+	if (!IFileManager::Get().DirectoryExists(*directory))
 	{
-		IFileManager::Get().MakeDirectory(*Directory);
+		IFileManager::Get().MakeDirectory(*directory);
 	}
 
-	UMoviePipelineOutputSetting* OutputSetting = GetPipeline()->GetPipelineMasterConfig()->FindSetting<UMoviePipelineOutputSetting>();
+	UMoviePipelineOutputSetting* outputSetting = GetPipeline()->GetPipelineMasterConfig()->FindSetting<UMoviePipelineOutputSetting>();
 
 	// If the file doesn't exist, we're ok to continue
 	if (IFileManager::Get().FileSize(*FilePath) == -1)
@@ -221,7 +205,7 @@ bool UMoviePipelineOtioExporter::EnsureWritableFile()
 		return true;
 	}
 	// If we're allowed to overwrite the file, and we deleted it ok, we can continue
-	else if (OutputSetting->bOverrideExistingOutput && FPlatformFileManager::Get().GetPlatformFile().DeleteFile(*FilePath))
+	else if (outputSetting->bOverrideExistingOutput && FPlatformFileManager::Get().GetPlatformFile().DeleteFile(*FilePath))
 	{
 		return true;
 	}
@@ -232,7 +216,7 @@ bool UMoviePipelineOtioExporter::EnsureWritableFile()
 			LogMovieRenderPipeline, 
 			Error, 
 			TEXT("Failed to write otio cut file to '%s'. Should Overwrite: %d - If we should have overwritten the file, we failed to delete the file. If we shouldn't have overwritten the file the file already exists so we can't replace it."), 
-			*FilePath, OutputSetting->bOverrideExistingOutput
+			*FilePath, outputSetting->bOverrideExistingOutput
 		);
 		return false;
 	}

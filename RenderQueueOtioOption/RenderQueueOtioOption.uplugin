@@ -11,19 +11,25 @@
   "MarketplaceURL": "",
   "SupportURL": "",
   "CanContainContent": true,
-  "IsBetaVersion": false,
-  "IsExperimentalVersion": false,
+  "IsBetaVersion": true,
+  "IsExperimentalVersion": true,
   "Installed": false,
   "Modules": [
     {
       "Name": "RenderQueueOtioOption",
       "Type": "Runtime",
-      "LoadingPhase": "Default"
+      "LoadingPhase": "Default",
+      "WhitelistPlatforms": [
+        "Win64"
+      ]
     },
     {
       "Name": "opentimelineio",
       "Type": "Runtime",
-      "LoadingPhase": "Default"
+      "LoadingPhase": "Default",
+      "WhitelistPlatforms": [
+        "Win64"
+      ]
     }
   ],
   "Plugins": [

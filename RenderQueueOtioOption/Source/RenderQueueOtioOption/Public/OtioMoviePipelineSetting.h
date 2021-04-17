@@ -30,8 +30,10 @@ protected:
 
 public:
 	/** What format string should the final files use? Can include folder prefixes, and format string ({sequence_name}, etc.) */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "File Output")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Opentimelineio settings")
 		FString FileNameFormat;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Opentimelineio settings")
+		FString FileReferenceFormat = "mov";
 
 protected:
 	/** The file to write to */

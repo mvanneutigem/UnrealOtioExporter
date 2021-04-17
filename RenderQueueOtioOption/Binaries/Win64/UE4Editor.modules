@@ -1,8 +1,0 @@
-{
-	"BuildId": "14830424",
-	"Modules": 
-	{
-		"opentimelineio": "UE4Editor-opentimelineio.dll",
-		"RenderQueueOtioOption": "UE4Editor-RenderQueueOtioOption.dll"
-	}
-}
