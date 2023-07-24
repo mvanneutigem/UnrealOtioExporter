@@ -40,7 +40,7 @@ void UMoviePipelineOtioExporter::BeginExportImpl()
 	// Use our file name format ({sequence}), exposed on the setting gui, on the end of the shared common directory.
 	FString fileNameFormatString = outputSetting->OutputDirectory.Path / FileNameFormat;
 
-	FStringFormatNamedArguments formatOverrides;
+	TMap<FString, FString> formatOverrides;
 	formatOverrides.Add(TEXT("ext"), TEXT("otio"));
 
 	// Create a full output file path
@@ -108,22 +108,27 @@ void UMoviePipelineOtioExporter::BeginExportImpl()
 	for (int i = 0; i < OutputMetadata.Shots.Num(); i++)
 	{
 		FMovieSceneExportMetadataShot shot = OutputMetadata.Shots[i];
+		FString shotDisplayName;
+		FFrameNumberRange clipTimerange;
+		otio::TimeRange otioClipTimerange;
 
 		UMovieSceneCinematicShotSection* section = shot.MovieSceneShotSection.Get();
-		auto clipTimerange = section->GetRange();
-		auto otioClipTimerange = otio::TimeRange(
-			otio::RationalTime(
-				clipTimerange.GetLowerBoundValue().Value / tickResolution.Numerator * displayRate.Numerator,
-				displayRate.AsDecimal()
-			), 
-			otio::RationalTime(
-				clipTimerange.GetUpperBoundValue().Value / tickResolution.Numerator * displayRate.Numerator,
-				displayRate.AsDecimal()
-			)
-		);
 
-		UE_LOG(LogMovieRenderPipeline, Log, TEXT("Add shot to otio file: %s"), *section->GetShotDisplayName());
-		FString shotDisplayName = section->GetShotDisplayName();
+		if (section != nullptr) {
+			clipTimerange = section->GetRange();
+			UE_LOG(LogMovieRenderPipeline, Log, TEXT("Add shot to otio file: %s"), *section->GetShotDisplayName());
+			shotDisplayName = section->GetShotDisplayName();
+			otioClipTimerange = otio::TimeRange(
+				otio::RationalTime(
+					clipTimerange.GetLowerBoundValue().Value / tickResolution.Numerator * displayRate.Numerator,
+					displayRate.AsDecimal()
+				),
+				otio::RationalTime(
+					clipTimerange.GetUpperBoundValue().Value / tickResolution.Numerator * displayRate.Numerator,
+					displayRate.AsDecimal()
+				)
+			);
+		}
 
 		for (auto& clip : shot.Clips)
 		{
@@ -138,8 +143,12 @@ void UMoviePipelineOtioExporter::BeginExportImpl()
 				FMovieSceneExportMetadataClip clipMetadata = format.Value;
 				int32 duration = clipMetadata.GetDuration();
 				int32 inFrame = handleFrames;
-				FString fileName = clipMetadata.FileName;
-				FString shotFilePath = outputSetting->OutputDirectory.Path / fileName;
+				FString shotFilePath = clipMetadata.FileName; // used to be just the filename, now is the entire path.
+				if (section == nullptr)
+				{
+					auto index = shotFilePath.Find(FString("/"), ESearchCase::IgnoreCase, ESearchDir::FromEnd);
+					shotDisplayName = shotFilePath.RightChop(index);
+				}
 
 				std::string fileNameStr = std::string(TCHAR_TO_UTF8(*shotFilePath));
 				std::string shotDisplayNameStr = std::string(TCHAR_TO_UTF8(*shotDisplayName));
@@ -150,6 +159,20 @@ void UMoviePipelineOtioExporter::BeginExportImpl()
 					otio::RationalTime(duration, displayRate.AsDecimal())
 				);
 				otioReference->set_available_range(otioMediaTimerange);
+
+				if (section == nullptr)
+				{
+					otioClipTimerange = otio::TimeRange(
+						otio::RationalTime(
+							inFrame,
+							displayRate.AsDecimal()
+						),
+						otio::RationalTime(
+							inFrame + duration,
+							displayRate.AsDecimal()
+						)
+					);
+				}
 				
 				auto otioClip = new otio::Clip(shotDisplayNameStr, otioReference, otioClipTimerange);
 

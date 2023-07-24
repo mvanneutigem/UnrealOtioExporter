@@ -32,7 +32,7 @@ public class RenderQueueOtioOption : ModuleRules
                 "MovieSceneTracks",
                 "LevelSequence",
                 "MovieScene",
-                "opentimelineio",
+                "OpenTimelineIO",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -56,5 +56,6 @@ public class RenderQueueOtioOption : ModuleRules
 				// ... add any modules that your module loads dynamically here ...
 			}
 		);
-    }
+
+	}
 }

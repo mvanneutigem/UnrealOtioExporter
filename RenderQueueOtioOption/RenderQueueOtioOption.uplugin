@@ -22,19 +22,15 @@
       "WhitelistPlatforms": [
         "Win64"
       ]
-    },
-    {
-      "Name": "opentimelineio",
-      "Type": "Runtime",
-      "LoadingPhase": "Default",
-      "WhitelistPlatforms": [
-        "Win64"
-      ]
     }
   ],
   "Plugins": [
     {
       "Name": "MovieRenderPipeline",
+      "Enabled": true
+    },
+    {
+      "Name": "OpenTimelineIO",
       "Enabled": true
     }
   ]
