@@ -1,7 +1,7 @@
 {
   "FileVersion": 3,
-  "Version": 1,
-  "VersionName": "1.0",
+  "Version": 2,
+  "VersionName": "2.0",
   "FriendlyName": "RenderQueueOtioOption",
   "Description": "Option to write out an otio cut file from the render queue.",
   "Category": "Other",

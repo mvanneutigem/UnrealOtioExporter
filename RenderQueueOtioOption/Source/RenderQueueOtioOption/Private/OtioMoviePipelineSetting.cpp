@@ -1,4 +1,4 @@
-
+// UE5 OTIO Movie Pipeline setting.
 #include "OtioMoviePipelineSetting.h"
 #include "MoviePipeline.h"
 #include "MoviePipelineOutputSetting.h"
@@ -27,15 +27,37 @@
 
 namespace otio = opentimelineio::OPENTIMELINEIO_VERSION;
 
+FString GetPreferredFormat(const TArray<FString>& Extensions)
+{
+	// Format extensions in order of preference
+	const TArray<FString> PreferredFormats = {
+		TEXT("MXF"),
+		TEXT("MOV"),
+		TEXT("AVI"),
+		TEXT("EXR"),
+		TEXT("PNG"),
+		TEXT("JPEG"),
+		TEXT("JPG")
+	};
+
+	for (const FString& Format : PreferredFormats)
+	{
+		if (Extensions.Contains(Format))
+		{
+			return Format;
+		}
+	}
+
+	return Extensions[0]; // If we didn't find a preferred format, use the first one
+}
+
 
 void UMoviePipelineOtioExporter::BeginExportImpl()
 {
 	UE_LOG(LogMovieRenderPipeline, Log, TEXT("Running OtioMoviePipelineSetting OTIO export"));
 	bHasFinishedExporting = true;
 
-	UMoviePipeline* pipeline = GetPipeline();
-	UMoviePipelineExecutorJob* job = pipeline->GetCurrentJob();
-	UMoviePipelineOutputSetting* outputSetting = pipeline->GetPipelineMasterConfig()->FindSetting<UMoviePipelineOutputSetting>();
+	UMoviePipelineOutputSetting* outputSetting = GetPipeline()->GetPipelineMasterConfig()->FindSetting<UMoviePipelineOutputSetting>();
 
 	// Use our file name format ({sequence}), exposed on the setting gui, on the end of the shared common directory.
 	FString fileNameFormatString = outputSetting->OutputDirectory.Path / FileNameFormat;
@@ -69,33 +91,36 @@ void UMoviePipelineOtioExporter::BeginExportImpl()
 	{
 		return;
 	}
-
+	
 	int32 handleFrames = outputSetting->HandleFrameCount;
 	const FMovieSceneExportMetadata& OutputMetadata = GetPipeline()->GetOutputMetadata();
 
 	// construct otio timeline
 	otio::ErrorStatus errorStatus;
-	auto masterSequenceName = std::string(TCHAR_TO_UTF8(*sequence->GetName()));
+	std::string masterSequenceName = std::string(TCHAR_TO_UTF8(*sequence->GetName()));
 
 	// in unreal frames are stored based on the tick interval, and some functions give that value back, 
-	// while others return the FPS frame number. We ned the frame number in relation to the fps rate
+	// while others return the FPS frame number. We need the frame number in relation to the fps rate
 	// so we convert these values in these instances.
-	auto tickResolution = movieScene->GetTickResolution();
-	auto displayRate = movieScene->GetDisplayRate();
-	auto playbackRange = movieScene->GetPlaybackRange();
-	auto startTime = (playbackRange.GetLowerBoundValue() / tickResolution.Numerator) * displayRate.Numerator;
-	auto trackDuration = (playbackRange.GetUpperBoundValue() - playbackRange.GetLowerBoundValue()) / tickResolution.Numerator * displayRate.Numerator;
+	FFrameRate tickResolution = movieScene->GetTickResolution();
+	FFrameRate displayRate = movieScene->GetDisplayRate();
+	FFrameNumberRange playbackRange = movieScene->GetPlaybackRange();
+	FFrameNumber duration = playbackRange.GetUpperBoundValue() - playbackRange.GetLowerBoundValue();
+	float startTimeAsFloat = (float(playbackRange.GetLowerBoundValue().Value) / tickResolution.Numerator) * displayRate.Numerator;
+	float durationAsFloat = duration.Value;
+	float trackDurationAsFloat = (durationAsFloat / tickResolution.Numerator) * displayRate.Numerator;
+	
 
 	// we store the timeline in a container, if we dont do this we run into issues when trying to write out the file.
-	auto otioTimeline = otio::SerializableObject::Retainer<otio::Timeline>(
-		new otio::Timeline(masterSequenceName, otio::RationalTime(startTime.Value / tickResolution.Numerator, displayRate.AsDecimal()))
+	otio::SerializableObject::Retainer<otio::Timeline> otioTimeline = otio::SerializableObject::Retainer<otio::Timeline>(
+		new otio::Timeline(masterSequenceName, otio::RationalTime(startTimeAsFloat))
 	);
-	auto otioTrackTimerange = otio::TimeRange(
-		otio::RationalTime(startTime.Value, displayRate.AsDecimal()),
-		otio::RationalTime(trackDuration.Value, displayRate.AsDecimal())
+	otio::TimeRange otioTrackTimerange = otio::TimeRange(
+		otio::RationalTime(startTimeAsFloat, displayRate.AsDecimal()),
+		otio::RationalTime(trackDurationAsFloat, displayRate.AsDecimal())
 	);
-	auto otioStack = new otio::Stack("master", otioTrackTimerange);
-	auto otioMasterTrack = new otio::Track("master", otioTrackTimerange);
+	otio::Stack* otioStack = new otio::Stack("master", otioTrackTimerange);
+	otio::Track* otioMasterTrack = new otio::Track("master", otioTrackTimerange);
 	if (!otioStack->append_child(otioMasterTrack, &errorStatus))
 	{
 		FString error_message = UTF8_TO_TCHAR(
@@ -105,88 +130,105 @@ void UMoviePipelineOtioExporter::BeginExportImpl()
 	}
 	otioTimeline.value->set_tracks(otioStack);
 
-	for (int i = 0; i < OutputMetadata.Shots.Num(); i++)
+	// UE4 to UE5 regression, Bug report Case # 00618138
+	// the FMovieSceneExportMetadataShot objects in the FMovieSceneExportMetadata no longer contain MovieSceneShotSection info, the attribute it still there but it is a nullptr.
+	// Due to the changes made here, specifically for the XML Exporter:
+	// https://github.com/EpicGames/UnrealEngine/blob/5.3/Engine/Plugins/MovieScene/MovieRenderPipeline/Source/MovieRenderPipelineCore/Private/MoviePipeline.cpp#L261-L274
+	// For now the functionality here mirrors the FCPXML plugin when OutputMetadata option is selected
+	// With exception that it lays out the clips sequantially on the timeline rather than stacked.
+
+	int currentFrame = startTimeAsFloat;
+	int numberOfClips = 0;
+	for (const FMovieSceneExportMetadataShot& Shot : OutputMetadata.Shots)
 	{
-		FMovieSceneExportMetadataShot shot = OutputMetadata.Shots[i];
-		FString shotDisplayName;
-		FFrameNumberRange clipTimerange;
-		otio::TimeRange otioClipTimerange;
-
-		UMovieSceneCinematicShotSection* section = shot.MovieSceneShotSection.Get();
-
-		if (section != nullptr) {
-			clipTimerange = section->GetRange();
-			UE_LOG(LogMovieRenderPipeline, Log, TEXT("Add shot to otio file: %s"), *section->GetShotDisplayName());
-			shotDisplayName = section->GetShotDisplayName();
-			otioClipTimerange = otio::TimeRange(
-				otio::RationalTime(
-					clipTimerange.GetLowerBoundValue().Value / tickResolution.Numerator * displayRate.Numerator,
-					displayRate.AsDecimal()
-				),
-				otio::RationalTime(
-					clipTimerange.GetUpperBoundValue().Value / tickResolution.Numerator * displayRate.Numerator,
-					displayRate.AsDecimal()
-				)
-			);
-		}
-
-		for (auto& clip : shot.Clips)
+		for (const TPair < FString, TMap<FString, FMovieSceneExportMetadataClip> >& Clip : Shot.Clips)
 		{
-			FString clip_outer_name = clip.Key;
-			for (auto& format : clip.Value)
+			const TMap<FString, FMovieSceneExportMetadataClip>& ExtensionList = Clip.Value;
+			if (ExtensionList.Num() > 0)
 			{
-				if (FileReferenceFormat.Compare(format.Key, ESearchCase::IgnoreCase))
+				TArray<FString> Extensions;
+				ExtensionList.GetKeys(Extensions);
+				FString PreferredFormat = GetPreferredFormat(Extensions);
+				check(ExtensionList.Contains(PreferredFormat));
+				const FMovieSceneExportMetadataClip& ClipMetadata = ExtensionList[PreferredFormat];
+				if (ClipMetadata.IsValid())
 				{
-					continue;
-				}
-				FString clipFormat = format.Key;
-				FMovieSceneExportMetadataClip clipMetadata = format.Value;
-				int32 duration = clipMetadata.GetDuration();
-				int32 inFrame = handleFrames;
-				FString shotFilePath = clipMetadata.FileName; // used to be just the filename, now is the entire path.
-				if (section == nullptr)
-				{
-					auto index = shotFilePath.Find(FString("/"), ESearchCase::IgnoreCase, ESearchDir::FromEnd);
-					shotDisplayName = shotFilePath.RightChop(index);
-				}
+					numberOfClips += 1;
+					// Clip metadata
+					int32 Duration = ClipMetadata.GetDuration();
+					FString SectionName = Clip.Key;
+					FString shotFilePath = ClipMetadata.FileName;
 
-				std::string fileNameStr = std::string(TCHAR_TO_UTF8(*shotFilePath));
-				std::string shotDisplayNameStr = std::string(TCHAR_TO_UTF8(*shotDisplayName));
+					// ClipMetadata.FileName is inconsistent, some formats pass full path, some only filename.
+					FString outputDirectory = outputSetting->OutputDirectory.Path;
+					
+					FString* projectDir = tempFormatArgs.FilenameArguments.Find("project_dir");
+					FStringFormatNamedArguments arguments;
+					arguments.Add(TEXT("project_dir"), **projectDir);
+					FString resolvedOutputDirectory = FString::Format(*outputDirectory, arguments);
 
-				auto otioReference = new otio::ExternalReference(fileNameStr);
-				auto otioMediaTimerange = otio::TimeRange(
-					otio::RationalTime(inFrame, displayRate.AsDecimal()), 
-					otio::RationalTime(duration, displayRate.AsDecimal())
-				);
-				otioReference->set_available_range(otioMediaTimerange);
+					if (!shotFilePath.StartsWith(resolvedOutputDirectory)) {
+						shotFilePath = resolvedOutputDirectory / shotFilePath;
+					}
+					shotFilePath = FString("file://") / shotFilePath;
 
-				if (section == nullptr)
-				{
-					otioClipTimerange = otio::TimeRange(
+					// construct otio clip
+					std::string fileNameStr = std::string(TCHAR_TO_UTF8(*shotFilePath));
+					std::string shotDisplayNameStr = std::string(TCHAR_TO_UTF8(*SectionName));
+					shotDisplayNameStr += std::string("_clip") + std::to_string(numberOfClips);
+					otio::ExternalReference* otioReference = new otio::ExternalReference(fileNameStr);
+					otio::TimeRange otioMediaTimerange = otio::TimeRange(
+						otio::RationalTime(currentFrame, displayRate.AsDecimal()),
+						otio::RationalTime(Duration, displayRate.AsDecimal())
+					);
+					otioReference->set_available_range(otioMediaTimerange);
+
+					otio::TimeRange otioClipTimerange = otio::TimeRange(
 						otio::RationalTime(
-							inFrame,
+							currentFrame,
 							displayRate.AsDecimal()
 						),
 						otio::RationalTime(
-							inFrame + duration,
+							Duration,
 							displayRate.AsDecimal()
 						)
 					);
-				}
-				
-				auto otioClip = new otio::Clip(shotDisplayNameStr, otioReference, otioClipTimerange);
+					currentFrame += Duration;
 
-				if (!otioMasterTrack->append_child(otioClip, &errorStatus))
-				{
-					FString errorMessage = UTF8_TO_TCHAR(
-						(otio::ErrorStatus::outcome_to_string(errorStatus.outcome) + ": " + errorStatus.details).c_str()
-					);
-					UE_LOG(LogMovieRenderPipeline, Error, TEXT("OTIO Error: %s"), *errorMessage);
+					otio::Clip* otioClip = new otio::Clip(shotDisplayNameStr, otioReference, otioClipTimerange);
+					// Add clip to timeline
+					if (!otioMasterTrack->append_child(otioClip, &errorStatus))
+					{
+						FString errorMessage = UTF8_TO_TCHAR(
+							(otio::ErrorStatus::outcome_to_string(errorStatus.outcome) + ": " + errorStatus.details).c_str()
+						);
+						UE_LOG(LogMovieRenderPipeline, Error, TEXT("OTIO Error: %s"), *errorMessage);
+					}
+
 				}
 			}
 		}
-			
 	}
+
+	// For potential future "Sequencer" option - would not use any info from movie render queue export
+	//const UMovieSceneSubTrack* SubTrack = Cast<const UMovieSceneSubTrack>(shotTrack);
+	//if (SubTrack)
+	//{
+	//	for (UMovieSceneSection* Section : SubTrack->GetAllSections())
+	//	{
+	//		FMovieSceneFrameRange section_range = Section->SectionRange;
+	//		TRange< FFrameNumber > meow = section_range.Value;
+	//		UMovieSceneSubSection* SubSection = Cast<UMovieSceneSubSection>(Section);
+	//		UMovieSceneSequence* SubSequence = SubSection ? SubSection->GetSequence() : nullptr;
+	//		if (SubSequence && Section->IsActive())
+	//		{
+	//			UMovieSceneCinematicShotSection* ShotSection = Cast<UMovieSceneCinematicShotSection>(Section);
+	//			FString DisplayString = ShotSection ? ShotSection->GetShotDisplayName() : SubSequence->GetName();
+	//			// Add implementation here...
+	//		}
+	//	}
+	//}
+
 
 	// write out otio file
 	std::string otioFilePathStr = std::string(TCHAR_TO_UTF8(*FilePath));

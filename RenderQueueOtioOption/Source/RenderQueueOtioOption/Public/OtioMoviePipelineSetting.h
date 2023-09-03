@@ -31,8 +31,6 @@ public:
 	/** What format string should the final files use? Can include folder prefixes, and format string ({sequence_name}, etc.) */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "OpenTimelineIO Setting")
 		FString FileNameFormat;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "OpenTimelineIO Setting")
-		FString FileReferenceFormat = "jpeg";
 
 protected:
 	/** The file to write to */
